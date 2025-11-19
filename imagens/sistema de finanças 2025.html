@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finanças Pessoais</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --bg-card: #333333;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent: #2ecc71;
+            --accent-hover: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --border: #404040;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr 2fr;
+            }
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+        }
+
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .expenses-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .expense-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            transition: background-color 0.2s;
+        }
+
+        .expense-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .expense-info {
+            flex: 1;
+        }
+
+        .expense-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .expense-details {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .expense-value {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .expense-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+        }
+
+        .action-btn:hover {
+            color: var(--accent);
+        }
+
+        .delete-btn:hover {
+            color: var(--danger);
+        }
+
+        .categories-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .category-tag {
+            background-color: var(--bg-secondary);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .category-remove {
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .category-remove:hover {
+            color: var(--danger);
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background-color: var(--bg-card);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .summary-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 10px 0;
+            color: var(--accent);
+        }
+
+        .summary-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .export-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .export-title {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--border);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            border-radius: 10px;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .filter-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 767px) {
+            .expense-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .expense-actions {
+                align-self: flex-end;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .filter-row {
+                flex-direction: column;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            font-weight: 500;
+            z-index: 1100;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .notification.success {
+            background-color: var(--accent);
+        }
+
+        .notification.error {
+            background-color: var(--danger);
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .chart-container {
+            margin-top: 20px;
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background-color: var(--accent);
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            min-height: 10px;
+            transition: height 0.5s;
+        }
+
+        .chart-label {
+            position: absolute;
+            bottom: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Finanças Pessoais</h1>
+            <p class="subtitle">Controle seus gastos de forma simples e eficiente</p>
+        </header>
+
+        <div class="app-container">
+            <div class="left-panel">
+                <div class="card">
+                    <h2>Adicionar Gasto</h2>
+                    <form id="expense-form">
+                        <div class="form-group">
+                            <label for="expense-name">Nome do Item</label>
+                            <input type="text" id="expense-name" placeholder="Ex: Almoço, Uber, Netflix..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="expense-value">Valor (R$)</label>
+                            <input type="number" id="expense-value" step="0.01" min="0" placeholder="0,00" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="expense-category">Categoria</label>
+                            <input type="text" id="expense-category" list="categories-list" placeholder="Selecione ou digite uma categoria" required>
+                            <datalist id="categories-list">
+                                <!-- Categorias serão preenchidas dinamicamente -->
+                            </datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="expense-date">Data</label>
+                            <input type="date" id="expense-date" required>
+                        </div>
+                        <button type="submit" class="btn">
+                            <i>+</i> Adicionar Gasto
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2>Categorias</h2>
+                    <p>Gerencie suas categorias personalizadas:</p>
+                    <div class="form-group">
+                        <input type="text" id="new-category" placeholder="Nova categoria">
+                        <button class="btn btn-outline" id="add-category-btn" style="margin-top: 10px;">
+                            <i>+</i> Adicionar Categoria
+                        </button>
+                    </div>
+                    <div class="categories-list" id="categories-container">
+                        <!-- Categorias serão preenchidas dinamicamente -->
+                    </div>
+                </div>
+
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <div class="summary-title">Total Gasto</div>
+                        <div class="summary-value" id="total-expenses">R$ 0,00</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-title">Categorias</div>
+                        <div class="summary-value" id="total-categories">0</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-title">Maior Gasto</div>
+                        <div class="summary-value" id="highest-expense">R$ 0,00</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Seus Gastos</h2>
+                        <button class="btn btn-outline" id="clear-all-btn">
+                            <i>🗑️</i> Limpar Tudo
+                        </button>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <div class="filter-row">
+                            <div class="filter-group">
+                                <label for="filter-category">Filtrar por Categoria</label>
+                                <select id="filter-category">
+                                    <option value="">Todas as categorias</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="filter-month">Filtrar por Mês</label>
+                                <select id="filter-month">
+                                    <option value="">Todos os meses</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="sort-by">Ordenar por</label>
+                                <select id="sort-by">
+                                    <option value="date">Data</option>
+                                    <option value="value">Valor</option>
+                                    <option value="name">Nome</option>
+                                    <option value="category">Categoria</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="expenses-list" id="expenses-container">
+                        <!-- Gastos serão preenchidos dinamicamente -->
+                        <div class="empty-state" id="empty-state">
+                            <i>💰</i>
+                            <p>Nenhum gasto registrado ainda</p>
+                            <p>Adicione seu primeiro gasto usando o formulário ao lado</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Visão por Categoria</h2>
+                    <div class="chart-container" id="chart-container">
+                        <!-- Gráfico será preenchido dinamicamente -->
+                    </div>
+                </div>
+
+                <div class="export-section">
+                    <h3 class="export-title">Exportar Dados</h3>
+                    <div class="btn-group">
+                        <button class="btn" id="export-pdf">
+                            <i>📄</i> Exportar PDF
+                        </button>
+                        <button class="btn" id="export-email">
+                            <i>✉️</i> Enviar por E-mail
+                        </button>
+                        <button class="btn" id="export-whatsapp">
+                            <i>💬</i> Compartilhar no WhatsApp
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para edição de gasto -->
+    <div class="modal" id="edit-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Editar Gasto</h3>
+                <button class="modal-close" id="close-edit-modal">&times;</button>
+            </div>
+            <form id="edit-form">
+                <input type="hidden" id="edit-id">
+                <div class="form-group">
+                    <label for="edit-name">Nome do Item</label>
+                    <input type="text" id="edit-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-value">Valor (R$)</label>
+                    <input type="number" id="edit-value" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-category">Categoria</label>
+                    <input type="text" id="edit-category" list="categories-list" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-date">Data</label>
+                    <input type="date" id="edit-date" required>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn">Salvar Alterações</button>
+                    <button type="button" class="btn btn-danger" id="cancel-edit">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notificação -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Dados iniciais
+        let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+        let categories = JSON.parse(localStorage.getItem('categories')) || [
+            'Alimentação', 'Transporte', 'Moradia', 'Lazer', 'Saúde', 'Educação'
+        ];
+
+        // Elementos DOM
+        const expenseForm = document.getElementById('expense-form');
+        const expensesContainer = document.getElementById('expenses-container');
+        const emptyState = document.getElementById('empty-state');
+        const categoriesContainer = document.getElementById('categories-container');
+        const categoriesList = document.getElementById('categories-list');
+        const addCategoryBtn = document.getElementById('add-category-btn');
+        const newCategoryInput = document.getElementById('new-category');
+        const totalExpensesElement = document.getElementById('total-expenses');
+        const totalCategoriesElement = document.getElementById('total-categories');
+        const highestExpenseElement = document.getElementById('highest-expense');
+        const exportPdfBtn = document.getElementById('export-pdf');
+        const exportEmailBtn = document.getElementById('export-email');
+        const exportWhatsappBtn = document.getElementById('export-whatsapp');
+        const editModal = document.getElementById('edit-modal');
+        const editForm = document.getElementById('edit-form');
+        const closeEditModal = document.getElementById('close-edit-modal');
+        const cancelEdit = document.getElementById('cancel-edit');
+        const filterCategory = document.getElementById('filter-category');
+        const filterMonth = document.getElementById('filter-month');
+        const sortBy = document.getElementById('sort-by');
+        const clearAllBtn = document.getElementById('clear-all-btn');
+        const chartContainer = document.getElementById('chart-container');
+        const notification = document.getElementById('notification');
+        const expenseDate = document.getElementById('expense-date');
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            // Definir data atual como padrão
+            const today = new Date().toISOString().split('T')[0];
+            expenseDate.value = today;
+            
+            updateExpensesList();
+            updateCategoriesList();
+            updateSummary();
+            updateChart();
+            updateFilters();
+        });
+
+        // Adicionar gasto
+        expenseForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('expense-name').value;
+            const value = parseFloat(document.getElementById('expense-value').value);
+            const category = document.getElementById('expense-category').value;
+            const date = document.getElementById('expense-date').value;
+            
+            if (name && value && category && date) {
+                const expense = {
+                    id: Date.now(),
+                    name,
+                    value,
+                    category,
+                    date
+                };
+                
+                expenses.push(expense);
+                saveData();
+                updateExpensesList();
+                updateSummary();
+                updateChart();
+                updateFilters();
+                
+                // Adicionar categoria se for nova
+                if (!categories.includes(category)) {
+                    categories.push(category);
+                    updateCategoriesList();
+                }
+                
+                // Limpar formulário
+                expenseForm.reset();
+                expenseDate.value = today;
+                
+                showNotification('Gasto adicionado com sucesso!', 'success');
+            }
+        });
+
+        // Adicionar categoria
+        addCategoryBtn.addEventListener('click', () => {
+            const newCategory = newCategoryInput.value.trim();
+            if (newCategory && !categories.includes(newCategory)) {
+                categories.push(newCategory);
+                saveData();
+                updateCategoriesList();
+                newCategoryInput.value = '';
+                showNotification('Categoria adicionada com sucesso!', 'success');
+            }
+        });
+
+        // Remover categoria
+        function removeCategory(category) {
+            // Verificar se a categoria está sendo usada
+            const isUsed = expenses.some(expense => expense.category === category);
+            
+            if (isUsed) {
+                showNotification('Não é possível remover uma categoria em uso!', 'error');
+                return;
+            }
+            
+            categories = categories.filter(c => c !== category);
+            saveData();
+            updateCategoriesList();
+            showNotification('Categoria removida com sucesso!', 'success');
+        }
+
+        // Remover gasto
+        function removeExpense(id) {
+            if (confirm('Tem certeza que deseja excluir este gasto?')) {
+                expenses = expenses.filter(expense => expense.id !== id);
+                saveData();
+                updateExpensesList();
+                updateSummary();
+                updateChart();
+                showNotification('Gasto removido com sucesso!', 'success');
+            }
+        }
+
+        // Editar gasto
+        function editExpense(id) {
+            const expense = expenses.find(exp => exp.id === id);
+            if (expense) {
+                document.getElementById('edit-id').value = expense.id;
+                document.getElementById('edit-name').value = expense.name;
+                document.getElementById('edit-value').value = expense.value;
+                document.getElementById('edit-category').value = expense.category;
+                document.getElementById('edit-date').value = expense.date;
+                editModal.style.display = 'flex';
+            }
+        }
+
+        // Fechar modal de edição
+        closeEditModal.addEventListener('click', () => {
+            editModal.style.display = 'none';
+        });
+
+        cancelEdit.addEventListener('click', () => {
+            editModal.style.display = 'none';
+        });
+
+        // Salvar edição
+        editForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const id = parseInt(document.getElementById('edit-id').value);
+            const name = document.getElementById('edit-name').value;
+            const value = parseFloat(document.getElementById('edit-value').value);
+            const category = document.getElementById('edit-category').value;
+            const date = document.getElementById('edit-date').value;
+            
+            const expenseIndex = expenses.findIndex(exp => exp.id === id);
+            if (expenseIndex !== -1) {
+                expenses[expenseIndex].name = name;
+                expenses[expenseIndex].value = value;
+                expenses[expenseIndex].category = category;
+                expenses[expenseIndex].date = date;
+                
+                saveData();
+                updateExpensesList();
+                updateSummary();
+                updateChart();
+                
+                // Adicionar categoria se for nova
+                if (!categories.includes(category)) {
+                    categories.push(category);
+                    updateCategoriesList();
+                }
+                
+                editModal.style.display = 'none';
+                showNotification('Gasto atualizado com sucesso!', 'success');
+            }
+        });
+
+        // Limpar todos os gastos
+        clearAllBtn.addEventListener('click', () => {
+            if (expenses.length === 0) {
+                showNotification('Não há gastos para limpar!', 'error');
+                return;
+            }
+            
+            if (confirm('Tem certeza que deseja excluir TODOS os gastos? Esta ação não pode ser desfeita.')) {
+                expenses = [];
+                saveData();
+                updateExpensesList();
+                updateSummary();
+                updateChart();
+                showNotification('Todos os gastos foram removidos!', 'success');
+            }
+        });
+
+        // Atualizar lista de gastos
+        function updateExpensesList() {
+            if (expenses.length === 0) {
+                emptyState.style.display = 'block';
+                expensesContainer.innerHTML = '';
+                expensesContainer.appendChild(emptyState);
+            } else {
+                emptyState.style.display = 'none';
+                
+                // Aplicar filtros e ordenação
+                let filteredExpenses = [...expenses];
+                
+                // Filtrar por categoria
+                const categoryFilter = filterCategory.value;
+                if (categoryFilter) {
+                    filteredExpenses = filteredExpenses.filter(expense => expense.category === categoryFilter);
+                }
+                
+                // Filtrar por mês
+                const monthFilter = filterMonth.value;
+                if (monthFilter) {
+                    filteredExpenses = filteredExpenses.filter(expense => {
+                        const expenseMonth = expense.date.substring(0, 7); // YYYY-MM
+                        return expenseMonth === monthFilter;
+                    });
+                }
+                
+                // Ordenar
+                const sortValue = sortBy.value;
+                filteredExpenses.sort((a, b) => {
+                    if (sortValue === 'value') {
+                        return b.value - a.value;
+                    } else if (sortValue === 'name') {
+                        return a.name.localeCompare(b.name);
+                    } else if (sortValue === 'category') {
+                        return a.category.localeCompare(b.category);
+                    } else { // date (padrão)
+                        return new Date(b.date) - new Date(a.date);
+                    }
+                });
+                
+                expensesContainer.innerHTML = '';
+                filteredExpenses.forEach(expense => {
+                    const expenseElement = document.createElement('div');
+                    expenseElement.className = 'expense-item';
+                    
+                    const dateObj = new Date(expense.date);
+                    const formattedDate = dateObj.toLocaleDateString('pt-BR');
+                    
+                    expenseElement.innerHTML = `
+                        <div class="expense-info">
+                            <div class="expense-name">${expense.name}</div>
+                            <div class="expense-details">
+                                <span class="expense-category">${expense.category}</span>
+                                <span class="expense-date">${formattedDate}</span>
+                            </div>
+                        </div>
+                        <div class="expense-value">R$ ${expense.value.toFixed(2)}</div>
+                        <div class="expense-actions">
+                            <button class="action-btn edit-btn" onclick="editExpense(${expense.id})" title="Editar">
+                                <i>✏️</i>
+                            </button>
+                            <button class="action-btn delete-btn" onclick="removeExpense(${expense.id})" title="Excluir">
+                                <i>🗑️</i>
+                            </button>
+                        </div>
+                    `;
+                    expensesContainer.appendChild(expenseElement);
+                });
+            }
+        }
+
+        // Atualizar lista de categorias
+        function updateCategoriesList() {
+            categoriesContainer.innerHTML = '';
+            categoriesList.innerHTML = '';
+            filterCategory.innerHTML = '<option value="">Todas as categorias</option>';
+            
+            categories.forEach(category => {
+                // Adicionar à lista de tags
+                const categoryTag = document.createElement('div');
+                categoryTag.className = 'category-tag';
+                categoryTag.innerHTML = `
+                    ${category}
+                    <span class="category-remove" onclick="removeCategory('${category}')" title="Remover categoria">&times;</span>
+                `;
+                categoriesContainer.appendChild(categoryTag);
+                
+                // Adicionar ao datalist
+                const option = document.createElement('option');
+                option.value = category;
+                categoriesList.appendChild(option);
+                
+                // Adicionar ao filtro
+                const filterOption = document.createElement('option');
+                filterOption.value = category;
+                filterOption.textContent = category;
+                filterCategory.appendChild(filterOption);
+            });
+            
+            totalCategoriesElement.textContent = categories.length;
+        }
+
+        // Atualizar resumo
+        function updateSummary() {
+            const total = expenses.reduce((sum, expense) => sum + expense.value, 0);
+            totalExpensesElement.textContent = `R$ ${total.toFixed(2)}`;
+            
+            const highest = expenses.length > 0 
+                ? Math.max(...expenses.map(expense => expense.value))
+                : 0;
+            highestExpenseElement.textContent = `R$ ${highest.toFixed(2)}`;
+        }
+
+        // Atualizar gráfico
+        function updateChart() {
+            chartContainer.innerHTML = '';
+            
+            if (expenses.length === 0) {
+                chartContainer.innerHTML = '<div class="empty-state"><p>Nenhum dado para exibir</p></div>';
+                return;
+            }
+            
+            // Agrupar gastos por categoria
+            const categoryTotals = {};
+            expenses.forEach(expense => {
+                if (categoryTotals[expense.category]) {
+                    categoryTotals[expense.category] += expense.value;
+                } else {
+                    categoryTotals[expense.category] = expense.value;
+                }
+            });
+            
+            // Encontrar o valor máximo para normalizar as alturas
+            const maxValue = Math.max(...Object.values(categoryTotals));
+            
+            // Criar barras do gráfico
+            Object.entries(categoryTotals).forEach(([category, total]) => {
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar';
+                bar.style.height = `${(total / maxValue) * 100}%`;
+                
+                const label = document.createElement('div');
+                label.className = 'chart-label';
+                label.textContent = category;
+                
+                bar.appendChild(label);
+                chartContainer.appendChild(bar);
+                
+                // Adicionar tooltip
+                bar.title = `${category}: R$ ${total.toFixed(2)}`;
+            });
+        }
+
+        // Atualizar filtros
+        function updateFilters() {
+            // Atualizar filtro de meses
+            const months = [...new Set(expenses.map(expense => expense.date.substring(0, 7)))].sort().reverse();
+            
+            filterMonth.innerHTML = '<option value="">Todos os meses</option>';
+            months.forEach(month => {
+                const [year, monthNum] = month.split('-');
+                const monthNames = [
+                    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+                ];
+                const monthName = monthNames[parseInt(monthNum) - 1];
+                
+                const option = document.createElement('option');
+                option.value = month;
+                option.textContent = `${monthName} ${year}`;
+                filterMonth.appendChild(option);
+            });
+        }
+
+        // Aplicar filtros quando alterados
+        filterCategory.addEventListener('change', updateExpensesList);
+        filterMonth.addEventListener('change', updateExpensesList);
+        sortBy.addEventListener('change', updateExpensesList);
+
+        // Salvar dados no localStorage
+        function saveData() {
+            localStorage.setItem('expenses', JSON.stringify(expenses));
+            localStorage.setItem('categories', JSON.stringify(categories));
+        }
+
+        // Mostrar notificação
+        function showNotification(message, type) {
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Exportar para PDF
+        exportPdfBtn.addEventListener('click', () => {
+            if (expenses.length === 0) {
+                showNotification('Não há dados para exportar!', 'error');
+                return;
+            }
+            
+            // Usar jsPDF com autotable
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Título
+            doc.setFontSize(20);
+            doc.setTextColor(46, 204, 113);
+            doc.text('Relatório de Gastos Pessoais', 105, 15, { align: 'center' });
+            
+            // Data de geração
+            doc.setFontSize(10);
+            doc.setTextColor(100, 100, 100);
+            doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, 105, 22, { align: 'center' });
+            
+            // Resumo
+            const total = expenses.reduce((sum, expense) => sum + expense.value, 0);
+            const highest = expenses.length > 0 
+                ? Math.max(...expenses.map(expense => expense.value))
+                : 0;
+            
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Total Gasto: R$ ${total.toFixed(2)}`, 14, 35);
+            doc.text(`Maior Gasto: R$ ${highest.toFixed(2)}`, 14, 42);
+            doc.text(`Quantidade de Gastos: ${expenses.length}`, 14, 49);
+            
+            // Tabela de gastos
+            const tableData = expenses.map(expense => {
+                const dateObj = new Date(expense.date);
+                const formattedDate = dateObj.toLocaleDateString('pt-BR');
+                return [
+                    expense.name,
+                    expense.category,
+                    formattedDate,
+                    `R$ ${expense.value.toFixed(2)}`
+                ];
+            });
+            
+            doc.autoTable({
+                startY: 55,
+                head: [['Item', 'Categoria', 'Data', 'Valor']],
+                body: tableData,
+                theme: 'grid',
+                headStyles: {
+                    fillColor: [46, 204, 113],
+                    textColor: 255
+                },
+                styles: {
+                    fontSize: 10,
+                    cellPadding: 3
+                },
+                margin: { left: 14, right: 14 }
+            });
+            
+            // Salvar PDF
+            doc.save('relatorio-gastos.pdf');
+            showNotification('PDF exportado com sucesso!', 'success');
+        });
+
+        // Exportar por e-mail
+        exportEmailBtn.addEventListener('click', () => {
+            if (expenses.length === 0) {
+                showNotification('Não há dados para exportar!', 'error');
+                return;
+            }
+            
+            let emailBody = "Relatório de Gastos Pessoais\n\n";
+            emailBody += "Data: " + new Date().toLocaleDateString('pt-BR') + "\n\n";
+            
+            // Resumo
+            const total = expenses.reduce((sum, expense) => sum + expense.value, 0);
+            const highest = expenses.length > 0 
+                ? Math.max(...expenses.map(expense => expense.value))
+                : 0;
+                
+            emailBody += "RESUMO:\n";
+            emailBody += `Total Gasto: R$ ${total.toFixed(2)}\n`;
+            emailBody += `Maior Gasto: R$ ${highest.toFixed(2)}\n`;
+            emailBody += `Quantidade de Gastos: ${expenses.length}\n\n`;
+            
+            emailBody += "DETALHES:\n";
+            expenses.forEach(expense => {
+                const dateObj = new Date(expense.date);
+                const formattedDate = dateObj.toLocaleDateString('pt-BR');
+                emailBody += `${formattedDate} - ${expense.name} (${expense.category}): R$ ${expense.value.toFixed(2)}\n`;
+            });
+            
+            const subject = "Relatório de Gastos Pessoais";
+            const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+            
+            window.location.href = mailtoLink;
+        });
+
+        // Exportar para WhatsApp
+        exportWhatsappBtn.addEventListener('click', () => {
+            if (expenses.length === 0) {
+                showNotification('Não há dados para exportar!', 'error');
+                return;
+            }
+            
+            let message = "📊 Meu Relatório de Gastos:\n\n";
+            
+            // Resumo
+            const total = expenses.reduce((sum, expense) => sum + expense.value, 0);
+            const highest = expenses.length > 0 
+                ? Math.max(...expenses.map(expense => expense.value))
+                : 0;
+                
+            message += "💵 RESUMO:\n";
+            message += `Total: R$ ${total.toFixed(2)}\n`;
+            message += `Maior Gasto: R$ ${highest.toFixed(2)}\n`;
+            message += `Quantidade: ${expenses.length}\n\n`;
+            
+            message += "📋 DETALHES:\n";
+            expenses.forEach(expense => {
+                const dateObj = new Date(expense.date);
+                const formattedDate = dateObj.toLocaleDateString('pt-BR');
+                message += `• ${expense.name} (${expense.category}): R$ ${expense.value.toFixed(2)} - ${formattedDate}\n`;
+            });
+            
+            const whatsappLink = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappLink, '_blank');
+        });
+    </script>
+</body>
+</html>

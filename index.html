@@ -595,6 +595,62 @@
                 font-size: 1rem;
             }
         }
+
+/* Container do carrossel */
+.carousel-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 40px auto;
+    width: 90%;
+}
+
+/* Área que "recorta" */
+.carousel-wrapper {
+    overflow: hidden;
+    width: 100%; /* agora ocupa quase toda a tela */
+}
+
+
+
+/* Track do carrossel */
+.carousel {
+    display: flex;
+    transition: transform 0.4s ease;
+}
+
+/* Imagens */
+.carousel img {
+    width: 100%;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+/* Botões */
+.carousel-btn {
+    margin-top: 300px;
+    background: #111;
+    color: #fff;
+    border: none;
+    font-size: 26px;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.25s;
+}
+
+.carousel-btn:hover {
+    background: #444;
+}
+
+/* Desktop */
+@media (min-width: 900px) {
+    .carousel-wrapper {
+        width: 100%; /* grande também no PC */
+    }
+}
+
+
     </style>
 </head>
 <body>
@@ -686,6 +742,63 @@
             </div>
         </div>
     </section>
+
+<!-- Features Section -->
+<section class="features" id="features">
+    <div class="container">
+        <h2 class="section-title">Todas as ferramentas que você precisa, em um só lugar</h2>
+
+        <!-- NOVA ÁREA DO CARROSSEL -->
+        <div class="carousel-container">
+           
+
+            <div class="carousel-wrapper">
+                <div class="carousel">
+                    <img src="imagens/img-000000001.png" alt="Imagem 1">
+                    
+                
+                </div>
+            </div>
+
+           
+        </div>
+
+        <!-- SUA GRADE DE RECURSOS -->
+        <div class="feature-grid">
+            <div class="feature-card">
+                <i class="fas fa-bolt"></i>
+                <h3>Registrar despesas em segundos</h3>
+                <p>Interface simples e rápida para registrar gastos em poucos toques.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-tags"></i>
+                <h3>Criar e editar categorias do seu jeito</h3>
+                <p>Personalize categorias que façam sentido para sua realidade.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-chart-pie"></i>
+                <h3>Ver quanto está gastando em cada mensalidade</h3>
+                <p>Gráficos simples mostram sua distribuição de gastos por categoria.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-calendar-alt"></i>
+                <h3>Acompanhar o gasto acumulado do mês</h3>
+                <p>Veja rapidamente quanto já gastou e quanto ainda pode gastar.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-filter"></i>
+                <h3>Filtrar por categorias</h3>
+                <p>Foque em categorias específicas para entender seus padrões.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-file-export"></i>
+                <h3>Exportar tudo em PDF ou Excel</h3>
+                <p>Relatórios completos para análise ou envio ao contador.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
 
     <!-- Why Better Section -->
     <section class="why-better" id="why-better">
@@ -887,6 +1000,11 @@
     </footer>
 
     <script>
+
+
+
+
+
         // Menu mobile toggle corrigido
         document.querySelector('.mobile-menu').addEventListener('click', function() {
             const navLinks = document.querySelector('.nav-links');
