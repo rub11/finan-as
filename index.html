@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Financeiro Simples | Controle Total do Seu Dinheiro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #10B981;
+            --primary-dark: #059669;
+            --primary-light: #34D399;
+            --secondary: #3B82F6;
+            --dark: #1F2937;
+            --light: #F9FAFB;
+            --gray: #6B7280;
+            --gray-light: #E5E7EB;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            color: var(--dark);
+            background-color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--dark);
+            z-index: 101;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            color: var(--gray);
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 30px;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+        }
+
+        .cta-button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Sections */
+        section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 2rem;
+            color: var(--dark);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            color: var(--gray);
+        }
+
+        /* Questions Section */
+        .questions {
+            background-color: white;
+        }
+
+        .question-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-item {
+            background-color: var(--light);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: var(--radius);
+            border-left: 4px solid var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .conclusion {
+            text-align: center;
+            margin-top: 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Features Section */
+        .features {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        /* Why Better Section */
+        .why-better {
+            background-color: white;
+        }
+
+        .comparison {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: center;
+        }
+
+        .comparison-item {
+            flex: 1;
+            min-width: 300px;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .problems {
+            background-color: #FEF2F2;
+            border-left: 4px solid #EF4444;
+        }
+
+        .solutions {
+            background-color: #F0FDF4;
+            border-left: 4px solid var(--primary);
+        }
+
+        .comparison-item h3 {
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .comparison-list {
+            list-style-type: none;
+        }
+
+        .comparison-list li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .problems .comparison-list li i {
+            color: #EF4444;
+        }
+
+        .solutions .comparison-list li i {
+            color: var(--primary);
+        }
+
+        /* For Entrepreneurs Section */
+        .entrepreneurs {
+            background: linear-gradient(135deg, #fef7ff 0%, #faf5ff 100%);
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .benefit-item {
+            background-color: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .benefit-item i {
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+
+        /* Before After Section */
+        .before-after {
+            background-color: white;
+        }
+
+        .comparison-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .comparison-card {
+            flex: 1;
+            min-width: 300px;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .before {
+            background-color: #FEF2F2;
+        }
+
+        .after {
+            background-color: #F0FDF4;
+        }
+
+        .comparison-card h3 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .comparison-card ul {
+            list-style-type: none;
+            text-align: left;
+        }
+
+        .comparison-card li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .before li i {
+            color: #EF4444;
+        }
+
+        .after li i {
+            color: var(--primary);
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf9 100%);
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .testimonial-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .testimonial-card:before {
+            content: """;
+            font-size: 5rem;
+            color: var(--primary-light);
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            opacity: 0.3;
+            font-family: Georgia, serif;
+        }
+
+        .testimonial-text {
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        /* Included Section */
+        .included {
+            background-color: white;
+        }
+
+        .included-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .included-item {
+            background-color: var(--light);
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .included-item i {
+            font-size: 1.5rem;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        /* No Math Section */
+        .no-math {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            text-align: center;
+        }
+
+        .no-math-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            background-color: white;
+            text-align: center;
+        }
+
+        .pricing-card {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            padding: 50px 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .pricing-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .pricing-card p {
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .bonus {
+            background-color: white;
+            color: var(--dark);
+            padding: 30px;
+            border-radius: var(--radius);
+            max-width: 800px;
+            margin: 40px auto 0;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .bonus h4 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        /* Guarantee Section */
+        .guarantee {
+            background-color: var(--light);
+            text-align: center;
+        }
+
+        .guarantee-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 60px 0 30px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .footer-logo i {
+            color: var(--primary);
+        }
+
+        .copyright {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray-light);
+        }
+
+        /* Menu Mobile Responsivo Corrigido */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: white;
+                box-shadow: var(--shadow);
+                padding: 20px;
+                z-index: 100;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links a {
+                padding: 12px 0;
+                border-bottom: 1px solid var(--gray-light);
+            }
+
+            .nav-links a:last-child {
+                border-bottom: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.7rem;
+            }
+
+            .comparison, .comparison-cards {
+                flex-direction: column;
+            }
+        }
+
+        /* Melhorias para telas muito pequenas */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .hero {
+                padding: 60px 0;
+            }
+            
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            section {
+                padding: 60px 0;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .feature-grid, .testimonial-grid, .included-grid, .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-button {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Finanças</span>
+                </div>
+                <div class="nav-links">
+                    <a href="#features">Funcionalidades</a>
+                    <a href="#why-better">Por que é Melhor</a>
+                    <a href="#testimonials">Depoimentos</a>
+                    <a href="#pricing">Preço</a>
+                </div>
+                <button class="mobile-menu" aria-label="Abrir menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Organize seu dinheiro de forma simples</h1>
+            <p> veja para onde seu dinheiro está indo – sem planilhas complicadas, sem aplicativos confusos e 100% pelo seu celular.</p>
+            <a href="#pricing" class="cta-button">Comece Agora</a>
+        </div>
+    </section>
+
+    <!-- Questions Section -->
+<section class="questions">
+    <div class="container">
+        <h2 class="section-title">❓ Se pergunte… isso acontece com você?</h2>
+        <div class="question-list">
+            <div class="question-item">Você sente que o dinheiro está sumindo e não faz ideia de para onde ele está indo?</div>
+            <div class="question-item">No começo do mês parece que vai dar tudo certo, mas no final você está perdido de novo?</div>
+            <div class="question-item">Você só descobre que gastou demais quando olha o saldo e leva aquele susto?</div>
+            <div class="question-item">Você já tentou anotar gastos ou usar planilhas, mas sempre acaba desistindo no meio do caminho?</div>
+            <div class="question-item">Você mistura gastos pessoais com gastos do trabalho e no fim não sabe o que é lucro ou prejuízo?</div>
+            <div class="question-item">Você sente que está sempre apagando incêndio com dinheiro, em vez de realmente controlar?</div>
+        </div>
+        <p class="conclusion">
+            Se você respondeu “sim” para pelo menos uma dessas perguntas,<br>
+            este sistema foi feito exatamente para você.
+        </p>
+    </div>
+</section>
+
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">🎯 O que esse sistema permite você fazer</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <i class="fas fa-bolt"></i>
+                    <h3>Registrar despesas em segundos</h3>
+                    <p>Interface simples e rápida para registrar gastos em poucos toques.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-tags"></i>
+                    <h3>Criar e editar categorias do seu jeito</h3>
+                    <p>Personalize categorias que façam sentido para sua realidade.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-pie"></i>
+                    <h3>Ver quanto está gastando em cada mensalidade</h3>
+                    <p>Gráficos simples mostram sua distribuição de gastos por categoria.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h3>Acompanhar o gasto acumulado do mês</h3>
+                    <p>Veja rapidamente quanto já gastou e quanto ainda pode gastar.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-filter"></i>
+                    <h3>Filtrar por categorias</h3>
+                    <p>Foque em categorias específicas para entender seus padrões.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-file-export"></i>
+                    <h3>Exportar tudo em PDF ou Excel</h3>
+                    <p>Relatórios completos para análise ou envio ao contador.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Better Section -->
+    <section class="why-better" id="why-better">
+        <div class="container">
+            <h2 class="section-title">🧠 Por que ele funciona melhor do que aplicativos tradicionais?</h2>
+            <div class="comparison">
+                <div class="comparison-item problems">
+                    <h3>A maioria das soluções falha porque:</h3>
+                    <ul class="comparison-list">
+                        <li><i class="fas fa-times"></i> É informação demais de uma vez</li>
+                        <li><i class="fas fa-times"></i> A pessoa não entende como começou</li>
+                        <li><i class="fas fa-times"></i> Precisa de muito tempo para preencher</li>
+                        <li><i class="fas fa-times"></i> É fácil esquecer de usar</li>
+                    </ul>
+                </div>
+                <div class="comparison-item solutions">
+                    <h3>Este sistema resolve isso:</h3>
+                    <ul class="comparison-list">
+                        <li><i class="fas fa-check"></i> Registro rápido</li>
+                        <li><i class="fas fa-check"></i> Interface simples</li>
+                        <li><i class="fas fa-check"></i> Sem burocracia</li>
+                        <li><i class="fas fa-check"></i> Você já vê resultado no mesmo dia</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Entrepreneurs Section -->
+    <section class="entrepreneurs">
+        <div class="container">
+            <h2 class="section-title">💼 Se você é autônomo, MEI ou trabalha por conta própria</h2>
+            <p class="section-subtitle">Esse sistema ajuda você a:</p>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <h3>Separar gastos pessoais dos gastos do negócio</h3>
+                </div>
+                <div class="benefit-item">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Ver se está lucrando ou apenas sobrevivendo</h3>
+                </div>
+                <div class="benefit-item">
+                    <i class="fas fa-receipt"></i>
+                    <h3>Registrar entradas e saídas facilmente</h3>
+                </div>
+                <div class="benefit-item">
+                    <i class="fas fa-file-invoice"></i>
+                    <h3>Exportar relatórios para enviar ao contador</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Before After Section -->
+    <section class="before-after">
+        <div class="container">
+            <h2 class="section-title">📊 Antes e Depois de usar o sistema</h2>
+            <div class="comparison-cards">
+                <div class="comparison-card before">
+                    <h3>⭐ Antes:</h3>
+                    <ul>
+                        <li><i class="fas fa-times"></i> Dinheiro misturado</li>
+                        <li><i class="fas fa-times"></i> Gastos esquecidos</li>
+                        <li><i class="fas fa-times"></i> Planilhas complicadas que ninguém atualiza</li>
+                        <li><i class="fas fa-times"></i> Falta de clareza</li>
+                        <li><i class="fas fa-times"></i> Estresse toda vez que pensa em dinheiro</li>
+                    </ul>
+                </div>
+                <div class="comparison-card after">
+                    <h3>⭐ Depois:</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Controle total</li>
+                        <li><i class="fas fa-check"></i> Visão organizada de onde o dinheiro está indo</li>
+                        <li><i class="fas fa-check"></i> Registro rápido no celular</li>
+                        <li><i class="fas fa-check"></i> Relatórios simples e diretos</li>
+                        <li><i class="fas fa-check"></i> Paz financeira</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <h2 class="section-title">❤️ Depoimentos</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Eu nunca consegui me organizar com dinheiro na vida. Em uma semana usando o sistema eu entendi exatamente onde eu estava errando. Sensacional!"</p>
+                    <p class="testimonial-author">— Marcos A.</p>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Tudo que eu precisava era simplicidade. Agora eu realmente sei quanto estou gastando e consegui reduzir despesas logo no primeiro mês."</p>
+                    <p class="testimonial-author">— Vitória R.</p>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Sou MEI e sempre misturei tudo. Depois desse sistema, entendi meu lucro pela primeira vez."</p>
+                    <p class="testimonial-author">— Carla M.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Included Section -->
+    <section class="included">
+        <div class="container">
+            <h2 class="section-title">🧩 O que está incluído no sistema</h2>
+            <div class="included-grid">
+                <div class="included-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Sistema completo de registro de despesas</span>
+                </div>
+                <div class="included-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Categorias personalizadas</span>
+                </div>
+                <div class="included-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Filtros por tipo de gasto</span>
+                </div>
+                <div class="included-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Totais automáticos por categoria e por mês</span>
+                </div>
+                <div class="included-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Exportação em PDF</span>
+                </div>
+                <div class="included-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Exportação em Excel</span>
+                </div>
+                <div class="included-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Uso no celular ou computador</span>
+                </div>
+                <div class="included-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Interface simples e intuitiva</span>
+                </div>
+                <div class="included-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Zero conhecimento técnico necessário</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- No Math Section -->
+    <section class="no-math">
+        <div class="container">
+            <h2 class="section-title">🔒 Você não precisa ser bom com números</h2>
+            <div class="no-math-content">
+                <p>Se você não gosta de matemática, sempre se perde com planilhas, já baixou apps e nunca usou, ou precisa de algo fácil e direto, esse sistema foi feito para você.</p>
+                <p>A ideia é: "Registrar rapidamente e entender claramente." Sem complicação.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <h2 class="section-title">🟢 Quanto custa organizar sua vida financeira?</h2>
+            <div class="pricing-card">
+                <h3>Menos do que você imagina</h3>
+                <p>Muito menos do que você perde todos os meses por falta de controle.</p>
+                <p>Com este sistema, você recupera esse valor no primeiro mês.</p>
+                <a href="#" class="cta-button">👉 Quero organizar minhas finanças agora</a>
+                <p style="margin-top: 15px; font-size: 0.9rem;">Clique e comece em menos de 3 minutos.</p>
+            </div>
+          
+        </div>
+    </section>
+
+    <!-- Guarantee Section -->
+    <section class="guarantee">
+        <div class="container">
+            <h2 class="section-title">✔ Garantia</h2>
+            <div class="guarantee-content">
+                <p>Se o que você quer é controle, simplicidade, clareza e organização financeira real, então este sistema resolve isso para você.</p>
+                <p>E se, mesmo assim, não fizer sentido… você pode cancelar sem complicação.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Finanças Simples</span>
+                </div>
+                <p>Chega de sofrer com o dinheiro.<br>Controle, clareza e tranquilidade começam aqui.</p>
+                
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Menu mobile toggle corrigido
+        document.querySelector('.mobile-menu').addEventListener('click', function() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+            
+            // Alterar ícone do menu
+            const icon = this.querySelector('i');
+            if (navLinks.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // Fechar menu ao clicar em um link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                const navLinks = document.querySelector('.nav-links');
+                navLinks.classList.remove('active');
+                
+                const icon = document.querySelector('.mobile-menu i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            });
+        });
+
+        // Smooth scrolling para anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
